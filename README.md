@@ -1,6 +1,6 @@
 # Explaining Drug Repositioning: A Case-Based Reasoning Graph Neural Network Approach
 
-This repository is a fork of CBR-SUBG from [Das el at 2022](https://github.com/rajarshd/CBR-SUBG) work. Here we implement CBR-SUBG to biomedical knowledge graph: MIND ([MechRepoNet](https://github.com/SuLab/MechRepoNet) with [DrugCentral](https://drugcentral.org/) indications). Results of our implementation are reported here: 
+This repository is a fork of CBR-SUBG from [Das el at 2022](https://github.com/rajarshd/CBR-SUBG) work. Here we implement CBR-SUBG on Mechanistic Repositioning Network with Indications (MIND), a biomedical knowledge graph that integrates two biomedical resources: [MechRepoNet](https://github.com/SuLab/MechRepoNet) and [DrugCentral](https://drugcentral.org/). Results of our implementation are reported here: 
 
 ## Installation
 
