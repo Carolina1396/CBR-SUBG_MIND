@@ -15,30 +15,30 @@ This repository is a fork of CBR-SUBG from [Das el at 2022](https://github.com/r
 The commands to reproduce CBR-SUBG on MIND dataset are listed below: 
 ```
 runner.py --output_dir 01_results/
-          --data_dir
-          --data_name
-          --paths_file_dir
-          --train_batch_size
-          --num_neighbors_train
-          --eval_batch_size
-          --num_neighbors_eval
-          --gcn_dim_init
-          --hidden_channels_gcn
-          --drop_gcn
-          --conv_layers
-          --transform_input
-          --use_wandb
-          --dist_metric
-          --dist_aggr1
-          --dist_aggr2
-          --sampling_loss
-          --temperature
-          --learning_rate
-          --warmup_step
-          --weight_decay
-          --num_train_epochs
-          --gradient_accumulation_steps
-          --check_steps
+          --data_dir rc/00_data/
+          --data_name MIND
+          --paths_file_dir MIND_3hop-branch200_.pkl
+          --train_batch_size 1
+          --num_neighbors_train 5
+          --eval_batch_size 1
+          --num_neighbors_eval 10
+          --gcn_dim_init 64
+          --hidden_channels_gcn 128
+          --drop_gcn 0.796562802302663
+          --conv_layers 1
+          --transform_input 0
+          --use_wandb 1
+          --dist_metric l2
+          --dist_aggr1 mean
+          --dist_aggr2 mean
+          --sampling_loss 0.33912131320071265
+          --temperature 0.10531080354774307
+          --learning_rate 0.1
+          --warmup_step 300
+          --weight_decay 0.01
+          --num_train_epochs 100
+          --gradient_accumulation_steps 2
+          --check_steps 10
 ```
 Note: Because PyTorch does not ensure perfect reproducibility, even when using the same random seed (as explained in the PyTorch documentation at https://pytorch.org/docs/stable/notes/randomness.html), there may be slight deviations in the results compared to those reported in the paper.
 
