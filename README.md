@@ -17,7 +17,7 @@ The commands to reproduce CBR-SUBG on MIND dataset are listed below:
 runner.py --output_dir 01_results/
           --data_dir rc/00_data/
           --data_name MIND
-          --paths_file_dir MIND_3hop-branch200_.pkl
+          --paths_file_dir MIND_cbr_subgraph_knn-5_branch-200.pkl
           --train_batch_size 1
           --num_neighbors_train 5
           --eval_batch_size 1
