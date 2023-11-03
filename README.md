@@ -7,9 +7,31 @@ This repository is a fork of CBR-SUBG from [Das el at 2022](https://github.com/r
 
 ## Installation
 
-## Dataset
+## Download MIND Dataset
+- MechRepoNet with DrugCentral Indications Knowledge Graph can de dowloaded from here: 
+- You can download our collected train/test/dev subgraphs here: 
 
-## Collecting subgraphs 
+## Collecting youw own subgraphs 
+Run your own subgraph collection procedure running: 
+
+1-Collect chains around train drug queries, joining the drug query entitiy to the disease answer.
+````
+python src/01_find_paths.py --data_name <dataset_name>
+                            --data_dir_name <path_to_train_graph_files>
+                            --output_dir <path_to_save_output_file>
+                            --cutoff 3
+                            --paths_to_collect 1000 
+````
+
+2-For a given query in train/dev/test set, we retrieve its K-nearest neighbor (KNN) queries from the training set. We then gather the collected paths from step 1 and traverse the KG. The following code snippet specifies that we consider 5 KNN queries and explore up to 100 nodes at each traversal step.
+```
+python src/02_graph_collection.py --data_name <dataset_name>
+                                  --data_dir_name <path_to_train_test_dev_files>
+                                  --knn 5
+                                  --collected_chains_name <path_to_collected_chains_file_in_step_1>
+                                  --branch_size 100
+                                  --output_dir <path_to_save_output_file>
+```
 
 ## Training
 The ```runner.py``` file is the main file that is needed to run the code. 
@@ -22,7 +44,7 @@ Trained models can ve tested as: Predictions are saved: ...
 ## Results 
 The commands to reproduce CBR-SUBG on MIND dataset are listed below: 
 ```
-runner.py --output_dir 01_results/
+python runner.py --output_dir 01_results/
           --data_dir rc/00_data/
           --data_name MIND
           --paths_file_dir MIND_cbr_subgraph_knn-5_branch-200.pkl
