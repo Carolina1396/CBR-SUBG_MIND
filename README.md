@@ -34,15 +34,7 @@ python src/01_collect_subgraphs/02_graph_collection.py --data_name <dataset_name
 ```
 
 ## Training
-The ```runner.py``` file is the main file that is needed to run the code. 
-
-## Reasoning 
-Trained models can ve tested as: Predictions are saved: ...
-```
-```
-
-## Results 
-The commands to reproduce CBR-SUBG on MIND dataset are listed below: 
+The ```runner.py``` file is the main file that is needed to run the code. The commands to reproduce CBR-SUBG on MIND dataset are listed below: 
 ```
 python runner.py --output_dir 01_results/
           --data_dir rc/00_data/
@@ -72,6 +64,11 @@ python runner.py --output_dir 01_results/
 ```
 Note: Because PyTorch does not ensure perfect reproducibility, even when using the same random seed (as explained in the PyTorch documentation at https://pytorch.org/docs/stable/notes/randomness.html), there may be slight deviations in the results compared to those reported in the paper.
 
+## Reasoning 
+Trained models can ve tested as: Predictions are saved: ...
+```
+xyz
+```
 The pre-trained model can be found here. To analyze results run as below:
 ```
 xyz
