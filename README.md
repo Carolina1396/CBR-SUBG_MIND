@@ -9,7 +9,15 @@ This repository is a fork of CBR-SUBG from [Das el at 2022](https://github.com/r
 
 ## Dataset
 
+## Collecting subgraphs 
+
 ## Training
+The ```runner.py``` file is the main file that is needed to run the code. 
+
+## Reasoning 
+Trained models can ve tested as: Predictions are saved: ...
+```
+```
 
 ## Results 
 The commands to reproduce CBR-SUBG on MIND dataset are listed below: 
@@ -44,7 +52,7 @@ Note: Because PyTorch does not ensure perfect reproducibility, even when using t
 
 The pre-trained model can be found here. To analyze results run as below:
 ```
-runner.py
+xyz
 ```
 
 ## Acknowledgments
