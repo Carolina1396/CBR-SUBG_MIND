@@ -16,7 +16,7 @@ Run your own subgraph collection procedure running:
 
 1-Collect chains around train drug queries, joining the drug query entitiy to the disease answer.
 ````
-python src/01_find_paths.py --data_name <dataset_name>
+python src/01_collect_subgraphs/01_find_paths.py --data_name <dataset_name>
                             --data_dir_name <path_to_train_graph_files>
                             --output_dir <path_to_save_output_file>
                             --cutoff 3
@@ -25,7 +25,7 @@ python src/01_find_paths.py --data_name <dataset_name>
 
 2-For a given query in train/dev/test set, we retrieve its K-nearest neighbor (KNN) queries from the training set. We then gather the collected paths from step 1 and traverse the KG. The following code snippet specifies that we consider 5 KNN queries and explore up to 100 nodes at each traversal step.
 ```
-python src/02_graph_collection.py --data_name <dataset_name>
+python src/01_collect_subgraphs/02_graph_collection.py --data_name <dataset_name>
                                   --data_dir_name <path_to_train_test_dev_files>
                                   --knn 5
                                   --collected_chains_name <path_to_collected_chains_file_in_step_1>
