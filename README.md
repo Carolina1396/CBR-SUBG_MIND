@@ -8,8 +8,8 @@ This repository is a fork of CBR-SUBG from [Das el at 2022](https://github.com/r
 ## Installation
 
 ## Download MIND Dataset
-- MechRepoNet with DrugCentral Indications Knowledge Graph can de dowloaded from here: 
-- You can download our collected train/test/dev subgraphs here: 
+- MechRepoNet with DrugCentral Indications Knowledge Graph and Train/Test/Dev data can de dowloaded from here: [here](https://www.dropbox.com/scl/fo/53x3iul9kh1ndhpky4s52/h?rlkey=0by2m3yo4bryabvbtzp6wn7kf&dl=0)
+- You can download our collected train/test/dev subgraphs here: [here](https://www.dropbox.com/scl/fo/53x3iul9kh1ndhpky4s52/h?rlkey=0by2m3yo4bryabvbtzp6wn7kf&dl=0)
 
 ## Collecting youw own subgraphs 
 Run your own subgraph collection procedure running: 
