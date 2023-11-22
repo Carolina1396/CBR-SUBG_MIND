@@ -64,15 +64,6 @@ python runner.py --output_dir 01_results/
 ```
 Note: Because PyTorch does not ensure perfect reproducibility, even when using the same random seed (as explained in the PyTorch documentation at https://pytorch.org/docs/stable/notes/randomness.html), there may be slight deviations in the results compared to those reported in the paper.
 
-## Reasoning 
-Trained models can ve tested as: Predictions are saved: ...
-```
-xyz
-```
-The pre-trained model can be found here. To analyze results run as below:
-```
-xyz
-```
 
 ## Acknowledgments
 This project builds upon work from [Das el at 2022](https://github.com/rajarshd/CBR-SUBG)
