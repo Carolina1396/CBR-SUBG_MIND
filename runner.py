@@ -9,6 +9,7 @@ from src.models.rgcn_model import RGCN
 import datetime
 import wandb
 import logging
+import os
 
 logger = logging.getLogger()
 logging.basicConfig(
@@ -24,9 +25,13 @@ def main():
     logger.info("=====Parsing Arguments=====")
     parser = HfArgumentParser((ModelArguments, DataTrainingArguments, CBRArguments))
     model_args, train_args, cbr_args = parser.parse_args_into_dataclasses()
+    os.makedirs(train_args.output_dir, exist_ok=True)
     fileHandler = logging.FileHandler("{0}/{1}".format(train_args.output_dir, "log.txt"))
     model_args.device = device 
     
+    # Format the current date and time
+    current_datetime = datetime.datetime.now()
+    cbr_args.formatted_datetime = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
     
     #WandB arguments
     if train_args.use_wandb:
@@ -40,12 +45,8 @@ def main():
                 config[attribute_name] = attribute_value
         
         wandb.init(project=cbr_args.data_name, config = config)
-       
-        # Format the current date and time
-        current_datetime = datetime.datetime.now()
-        formatted_datetime = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
-
-        wandb.run.name = f"{formatted_datetime}_{cbr_args.data_name}" #Run #Name
+      
+        wandb.run.name = f"{cbr_args.formatted_datetime}_{cbr_args.data_name}" #Run #Name
         
         
     #Load data 
@@ -76,9 +77,6 @@ def main():
         train_loss, results_train = trainer.train() #train
         results_dev = trainer.run_evaluate("dev", dataset_obj.dev_dataloader) #evaluaationß
         
-        logger.info('[Epoch:{}]:  Training Loss:{:.4} Training MRR:{:.4}'.format(epoch, 
-                                                                                 train_loss, 
-                                                                                 results_train['avg_rr']))
         if train_args.use_wandb:
             # tracks avg_rr on current batch
             wandb.log({'Loss Epoch':train_loss,
@@ -88,6 +86,29 @@ def main():
                    "Hits@3 Dev":results_dev.get('avg_hits@3', 0),
                    "Hits@5 Dev":results_dev.get('avg_hits@5', 0),
                    "Hits@10 Dev":results_dev.get('avg_hits@10', 0)})
+                    
+        logger.info('[Epoch:{}]:  Training Loss:{:.4} Training MRR:{:.4} Dev MRR:{:.4}'.format(epoch, 
+                                                                                 train_loss, 
+                                                                                 results_train['avg_rr'],
+                                                                                 results_dev['avg_rr']))
+     
+        results_test = trainer.run_evaluate("test", dataset_obj.test_dataloader)
+        if train_args.use_wandb:
+            wandb.log({
+                  "MRR Test":results_test['avg_rr'],
+                   "Hits@1 Test":results_test.get('avg_hits@1', 0),
+                   "Hits@3 Test":results_test.get('avg_hits@3', 0),
+                   "Hits@5 Test":results_test.get('avg_hits@5', 0),
+                   "Hits@10 Test":results_test.get('avg_hits@10', 0)})
+     
+        logger.info("Test MRR:{:.4} Hits@1:{:.4} Hits@3:{:.4} Hits@5:{:.4} Hits@10:{:.4}".format(results_test['avg_rr'], 
+                                                                                                    results_test['avg_hits@1'],
+                                                                                                    results_test['avg_hits@3'],
+                                                                                                    results_test['avg_hits@5'],
+                                                                                                    results_test['avg_hits@10'])) 
+            
+    
+    
 @dataclass
 class ModelArguments: 
     gcn_dim_init: int = field(default=32, metadata={"help": "Intial GCN layer dimensionality"})
@@ -112,7 +133,8 @@ class DataTrainingArguments(TrainingArguments):
     num_train_epochs: int = field(default=5, metadata={"help": "Total number of training epochs to perform."})
     gradient_accumulation_steps: int = field( default=1, metadata={"help": "Number of updates steps to accumulate before performing a backward/update pass."})
     check_steps: float = field(default=5.0, metadata={"help": "Steps to check training"})
-    #     output_dir: str = field(default = "01_results/", metadata ={"help": "Path to directory to save results"})
+    #     output_dir: str = field(default = "01_results/", metadata ={"help": "Path to directory to save results"}) # inherited from TrainingArguments
+    res_name: str = field(default = "mind_test_predictions", metadata ={"help": "Output file"})
 
 
 @dataclass
