@@ -11,6 +11,9 @@ import numpy as np
 from tqdm import tqdm
 import logging
 import os
+import json
+from collections import defaultdict
+import os
 
 logger = logging.getLogger()
 logging.basicConfig(
@@ -35,6 +38,8 @@ class cbrTrainer:
         self.device=device 
         self.data_name = self.cbr_args.data_name
         self.data_dir = self.cbr_args.data_dir
+        self.out_dir = self.train_args.output_dir
+        self.out_name = self.train_args.res_name
 
         #KNN and subgraphs setup
         self.neighbors = query_knn(self.dataset_obj, self.device) #search knn 
@@ -81,6 +86,7 @@ class cbrTrainer:
         Get ranking of expected answers 
 
         """
+        predictions = defaultdict(list)
         results ={}
 
         gold_answers = nn_batch[0].answers
@@ -108,7 +114,8 @@ class cbrTrainer:
                         filtered_answers.append(pred)
 
             rank = None
-
+            predictions[nn_batch[0].query[0]+"_"+gold_answer].append(filtered_answers[:200])
+            
             for i, e_to_check in enumerate(filtered_answers):
                 if gold_answer == e_to_check:
 
@@ -126,11 +133,13 @@ class cbrTrainer:
                             if rank <= 1:
                                 results["avg_hits@1"] = 1 + results.get("avg_hits@1", 0.0)
                 results["avg_rr"] = (1.0 / rank) + results.get("avg_rr", 0.0)
-        return results                    
-
         
-        
-        
+                        
+        if data_name == "test": 
+            return results, predictions
+        else:
+            return results
+    
     def train(self): 
         """
         Train over each subgraph batch  
@@ -210,7 +219,7 @@ class cbrTrainer:
                 pred_ranks = nn_batch[nn_slices[i]].x[pred_ranks].cpu().numpy() #get the ids of the predictions
 
                 ranking_results = self.ranking_eval(nn_batch, pred_ranks, data_name)
-                
+#                 print(ranking_results)
                 for key_ in ranking_results:
                     results[key_] = ranking_results.get(key_,0) + results.get(key_,0)
                     
@@ -262,7 +271,7 @@ class cbrTrainer:
         results = {}
 
         self.model.eval()
-        for batch_ctr, batch in enumerate(tqdm(dataloader, desc="[Eval]", position=0, leave=True)):
+        for batch_ctr, batch in enumerate(tqdm(dataloader, desc=f"{data_name}", position=0, leave=True)):
             
             
             #[query + KNN entities] #nn_slices: position of the queries
@@ -326,8 +335,31 @@ class cbrTrainer:
                 #ranking
                 pred_ranks = torch.argsort(dists).cpu().numpy() #sort predictions
                 pred_ranks = nn_batch[nn_slices[i]].x[pred_ranks].cpu().numpy() #get the ids of the predictions
+                
+                
+                if data_name == 'dev':
+                    ranking_results = self.ranking_eval(nn_batch, pred_ranks, data_name)
+                    
+                if data_name == 'test':
+                    ranking_results, predictions_test = self.ranking_eval(nn_batch, pred_ranks, data_name)
+                    
+                    # Save predictions
+                    os.makedirs(self.out_dir, exist_ok=True)
+                    pred_file = os.path.join(self.out_dir,  f"{self.out_name}_{self.cbr_args.formatted_datetime}.json")
+                    
+                    if os.path.exists(pred_file): 
+                        with open(f'{pred_file}', 'r') as file:
+                            data = json.load(file)
+                              
+                        data.update(predictions_test) 
 
-                ranking_results = self.ranking_eval(nn_batch, pred_ranks, data_name)
+                        with open(f'{pred_file}', 'w') as file:
+                            json.dump(data, file)
+
+                    else: 
+                        with open(f'{pred_file}', 'w') as file:
+                            json.dump(predictions_test, file)
+                    
                 
                 for key_ in ranking_results:
                     results[key_] = ranking_results.get(key_,0) + results.get(key_,0)
